@@ -1,16 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-b from-[#1a1a2e] to-[#16213e] text-white">
     <div class="max-w-7xl mx-auto px-6 py-10">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="text-3xl font-bold text-red-400 lato-font">📚 All Anime List</h1>
-        <router-link 
-          to="/"
-          class="text-sm bg-red-500 hover:bg-red-400 px-3 py-1 rounded-lg transition"
-        >
-          ← Kembali
-        </router-link>
-      </div>
+      <navbar />
 
       <!-- Loading -->
       <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -68,6 +59,7 @@
 </template>
 
 <script setup>
+import navbar from '@/assets/navbar.vue';
 import api from '@/plugins/axios';
 import { ref, computed, onMounted } from 'vue';
 

@@ -2,20 +2,7 @@
   <div class="min-h-screen bg-gray-900 text-white">
 
     <!-- Navbar -->
-    <header class="sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md shadow-md">
-      <div class="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-        <div>
-          <h1 class="text-3xl font-bold lato-font text-red-400">YumeNime</h1>
-          <p class="mt-1 text-sm opensans-font text-gray-300">Tempat menonton anime favorit — ringkas & elegan.</p>
-        </div>
-
-        <nav class="flex items-center gap-4">
-          <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
-          <router-link to="/genre-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Genre List</router-link>
-          <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
-        </nav>
-      </div>
-    </header>
+    <Navbar />
 
     <!-- Konten -->
     <div class="px-6 py-6">
@@ -79,6 +66,42 @@
           </ul>
         </section>
 
+        <!-- Download Batch -->
+        <section v-if="batch?.downloadUrl?.formats?.length" class="space-y-4">
+          <h3 class="text-2xl font-semibold">Download Batch</h3>
+          <p class="text-gray-300">{{ batch.title }}</p>
+
+          <div 
+            v-for="format in batch.downloadUrl.formats" 
+            :key="format.title" 
+            class="space-y-4"
+          >
+            <div 
+              v-for="quality in format.qualities" 
+              :key="quality.title" 
+              class="bg-gray-800 p-4 rounded space-y-2"
+            >
+              <div class="flex justify-between items-center">
+                <span class="font-semibold">{{ quality.title }}</span>
+                <span class="text-sm text-gray-400">{{ quality.size }}</span>
+              </div>
+
+              <div class="flex flex-wrap gap-2">
+                <a 
+                  v-for="link in quality.urls" 
+                  :key="link.title" 
+                  :href="link.url" 
+                  class="px-3 py-1 bg-red-600 rounded-full text-sm hover:bg-red-700 transition"
+                  target="_blank" 
+                  rel="noopener"
+                >
+                  {{ link.title }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Recommendations -->
         <section class="space-y-2">
           <h3 class="text-2xl font-semibold">Recommendations</h3>
@@ -99,19 +122,41 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/plugins/axios'
+import Navbar from '@/assets/navbar.vue'
 
 const route = useRoute()
 const animeDetail = ref(null)
+const batch = ref(null)
 
 const getAnimeDetail = async () => {
   try {
     const slug = route.params.slug
     const response = await api.get(`anime/anime/${slug}`)
     animeDetail.value = response.data.data
+
+    // Setelah animeDetail ada, baru fetch batch jika tersedia
+    if (animeDetail.value.batch?.slug) {
+      getDownloadBatch(animeDetail.value.batch.slug)
+    }
   } catch (error) {
     console.error('Error fetching anime detail:', error)
   }
 }
 
-onMounted(getAnimeDetail)
+const getDownloadBatch = async (batchSlug) => {
+  try {
+    const response = await api.get(`anime/batch/${batchSlug}`)
+    batch.value = response.data.data
+  } catch (error) {
+    if (error.response) {
+      console.error('API responded with error:', error.response.data)
+    } else {
+      console.error('Error fetching download batch:', error)
+    }
+  }
+}
+
+onMounted(() => {
+  getAnimeDetail()
+})
 </script>

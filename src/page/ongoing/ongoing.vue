@@ -1,20 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-b from-[#1a1a2e] to-[#16213e] text-white">
-    
-     <header class="sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md shadow-md">
-      <div class="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-        <div>
-          <h1 class="text-3xl font-bold lato-font text-red-400">YumeNime</h1>
-          <p class="mt-1 text-sm opensans-font text-gray-300">Tempat menonton anime favorit — ringkas & elegan.</p>
-        </div>
 
-        <nav class="flex items-center gap-4">
-          <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
-          <router-link to="/genre-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Genre List</router-link>
-          <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
-        </nav>
-      </div>
-    </header>
+     <Navbar />
 
     <div class="max-w-7xl mx-auto px-6 py-10">
       <!-- Header -->
@@ -86,6 +73,7 @@
 </template>
 
 <script setup>
+import Navbar from '@/assets/navbar.vue';
 import api from '@/plugins/axios';
 import { ref, onMounted } from 'vue';
 

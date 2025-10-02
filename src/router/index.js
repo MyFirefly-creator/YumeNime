@@ -39,7 +39,7 @@ const routes = [
   {
     path: "/genre/:slug",
     name: "GenreDetail",
-    component: GenreDetail,
+    component: GenreDetail, // file Vue yang kamu tunjukkan tadi
   },
   {
     path: "/ongoing-list",

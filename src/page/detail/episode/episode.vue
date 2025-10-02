@@ -2,20 +2,7 @@
   <div class="min-h-screen bg-gray-900 text-white">
 
     <!-- Navbar -->
-    <header class="sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md shadow-md">
-      <div class="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-        <div>
-          <h1 class="text-3xl font-bold lato-font text-red-400">YumeNime</h1>
-          <p class="mt-1 text-sm opensans-font text-gray-300">Tempat menonton anime favorit — ringkas & elegan.</p>
-        </div>
-
-        <nav class="flex items-center gap-4">
-          <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
-          <router-link to="/genre-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Genre List</router-link>
-          <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
-        </nav>
-      </div>
-    </header>
+    <Navbar />
 
     <div class="max-w-5xl mx-auto px-6">
 
@@ -121,6 +108,7 @@
 import { ref, watch, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/plugins/axios'
+import Navbar from '@/assets/navbar.vue'
 
 const route = useRoute()
 const episodeDetail = ref(null)
@@ -155,7 +143,6 @@ const getEpisodeDetail = async () => {
     const slug = route.params.episodeSlug
     const response = await api.get(`anime/episode/${slug}`)
     episodeDetail.value = response.data.data
-    console.log('Fetched episode detail:', episodeDetail.value)
 
     const links = {}
 
