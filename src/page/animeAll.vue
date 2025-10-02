@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-gradient-to-b from-[#1a1a2e] to-[#16213e] text-white">
     <div class="max-w-7xl mx-auto px-6 py-10">
-      <navbar />
+      <Navbar />
 
       <!-- Loading -->
-      <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div v-for="n in 15" :key="n" class="rounded-2xl bg-white/5 p-4 animate-pulse h-20"></div>
+      <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-for="n in 15" :key="n" class="rounded-2xl bg-white/5 animate-pulse aspect-[9/16]"></div>
       </div>
 
       <!-- Error -->
@@ -17,17 +17,21 @@
       <div v-else>
         <div v-for="(group, idx) in paginatedData" :key="idx" class="mb-8">
           <h2 class="text-xl font-bold text-yellow-400 mb-4">{{ group.startWith }}</h2>
-          <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            <article 
-              v-for="anime in group.animeList" 
+          <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <article
+              v-for="anime in group.animeList"
               :key="anime.animeId"
-              class="bg-white/5 rounded-xl p-3 hover:bg-white/10 transition shadow"
+              class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
             >
               <router-link :to="anime.href" class="block">
-                <h3 class="text-lg font-semibold truncate" :title="anime.title">
-                  {{ anime.title }}
-                </h3>
-                <p class="text-sm text-gray-300 truncate">{{ anime.animeId }}</p>
+                <!-- Placeholder image 9:16 (optional) -->
+                <div class="w-full aspect-[9/16] bg-white/5 overflow-hidden rounded-t-xl mb-2">
+                  <!-- Bisa pakai <img :src="anime.poster" /> jika ada poster -->
+                </div>
+                <div class="p-3">
+                  <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                  <p class="text-sm text-gray-300 truncate">{{ anime.animeId }}</p>
+                </div>
               </router-link>
             </article>
           </div>
@@ -59,7 +63,7 @@
 </template>
 
 <script setup>
-import navbar from '@/assets/navbar.vue';
+import Navbar from '@/assets/navbar.vue';
 import api from '@/plugins/axios';
 import { ref, computed, onMounted } from 'vue';
 
@@ -69,7 +73,7 @@ const error = ref(false);
 const errorMessage = ref('');
 
 const currentPage = ref(1);
-const perPage = 5; // jumlah group per halaman (misal A, B, C, D, E)
+const perPage = 5; // jumlah group per halaman
 
 const totalPages = computed(() => Math.ceil(animeAll.value.length / perPage));
 
@@ -80,6 +84,8 @@ const paginatedData = computed(() => {
 
 const getAnimeAll = async () => {
   loading.value = true;
+  error.value = false;
+  errorMessage.value = '';
   try {
     const response = await api.get('anime/unlimited');
     animeAll.value = response.data.data.list ?? [];

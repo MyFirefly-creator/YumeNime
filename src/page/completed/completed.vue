@@ -16,8 +16,8 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div v-for="n in 10" :key="'skeleton-'+n" class="rounded-2xl bg-white/5 p-4 animate-pulse h-64"></div>
+      <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-for="n in 10" :key="'skeleton-'+n" class="rounded-2xl bg-white/5 p-4 animate-pulse aspect-[9/16]"></div>
       </div>
 
       <!-- Error -->
@@ -27,17 +27,23 @@
 
       <!-- Anime List -->
       <div v-else>
-        <div v-if="completedAnime.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-if="completedAnime.length" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <article
             v-for="(anime, idx) in completedAnime"
             :key="anime.slug ?? idx"
-            class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+            class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
           >
             <router-link :to="`/anime/${anime.slug}`" class="block">
-                <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
+              <!-- Gambar 9:16 -->
+              <div class="w-full aspect-[9/16] overflow-hidden">
+                <img :src="anime.poster" :alt="anime.title" class="w-full h-full object-cover rounded-t-xl"/>
+              </div>
+              <!-- Info -->
+              <div class="p-3">
                 <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
-                <p class="text-sm text-gray-300">🎞️ {{ anime.episode_count }} episode</p>
+                <p class="text-sm text-gray-300 mt-1">🎞️ {{ anime.episode_count }} episode</p>
                 <p class="text-sm text-yellow-400 font-semibold">⭐ {{ anime.rating }}</p>
+              </div>
             </router-link>
           </article>
         </div>
@@ -80,6 +86,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
+
 const completedAnime = ref([]);
 const pagination = ref(null);
 const loading = ref(true);
@@ -110,7 +117,7 @@ const changePage = (page) => {
 
 onMounted(getCompleted);
 
-// supaya ketika ganti page dari pagination otomatis fetch ulang
+// Watch route param supaya otomatis fetch ulang saat ganti halaman
 watch(
   () => route.params.page,
   () => {

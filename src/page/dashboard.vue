@@ -26,8 +26,8 @@
     <!-- Content -->
     <main class="max-w-7xl mx-auto px-6 pb-10">
       <!-- Loading Skeleton -->
-      <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div v-for="n in 5" :key="'skeleton-' + n" class="rounded-2xl bg-white/5 p-4 animate-pulse h-64"></div>
+      <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-for="n in 5" :key="'skeleton-' + n" class="rounded-2xl bg-white/5 p-4 animate-pulse aspect-[9/16]"></div>
       </div>
 
       <!-- Error -->
@@ -38,16 +38,20 @@
       <!-- Search Results -->
       <div v-else-if="isSearching">
         <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">🔍 Hasil Pencarian</h2>
-        <div v-if="searchResults.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-if="searchResults.length" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <article
             v-for="(anime, idx) in searchResults"
             :key="anime.slug ?? idx"
-            class="bg-gray-800 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+            class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
           >
             <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
-              <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
-              <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
-              <p v-if="anime.episode_count" class="text-sm text-gray-300 mt-1">Episode: {{ anime.episode_count }}</p>
+              <div class="w-full aspect-[9/16] overflow-hidden">
+                <img :src="anime.poster" :alt="anime.title" class="w-full h-full object-cover"/>
+              </div>
+              <div class="p-3">
+                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                <p v-if="anime.episode_count" class="text-sm text-gray-300 mt-1">Episode: {{ anime.episode_count }}</p>
+              </div>
             </router-link>
           </article>
         </div>
@@ -70,15 +74,19 @@
             </router-link>
           </div>
 
-          <div v-if="ongoing.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div v-if="ongoing.length" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <article
               v-for="(anime, idx) in ongoing"
               :key="anime.slug ?? idx"
-              class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+              class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
             >
               <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
-                <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
-                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                <div class="w-full aspect-[9/16] overflow-hidden">
+                  <img :src="anime.poster" :alt="anime.title" class="w-full h-full object-cover rounded-t-xl"/>
+                </div>
+                <div class="p-3">
+                  <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                </div>
               </router-link>
             </article>
           </div>
@@ -99,15 +107,19 @@
             </router-link>
           </div>
 
-          <div v-if="complete.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div v-if="complete.length" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <article
               v-for="(anime, idx) in complete"
               :key="anime.slug ?? idx"
-              class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+              class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
             >
               <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
-                <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
-                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                <div class="w-full aspect-[9/16] overflow-hidden">
+                  <img :src="anime.poster" :alt="anime.title" class="w-full h-full object-cover rounded-t-xl"/>
+                </div>
+                <div class="p-3">
+                  <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                </div>
               </router-link>
             </article>
           </div>

@@ -1,7 +1,8 @@
 <template>
   <div class="min-h-screen bg-gradient-to-b from-[#1a1a2e] to-[#16213e] text-white">
 
-     <Navbar />
+    <!-- Navbar -->
+    <Navbar />
 
     <div class="max-w-7xl mx-auto px-6 py-10">
       <!-- Header -->
@@ -16,8 +17,8 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div v-for="n in 10" :key="'skeleton-'+n" class="rounded-2xl bg-white/5 p-4 animate-pulse h-64"></div>
+      <div v-if="loading" class="grid grid-cols-2 gap-4">
+        <div v-for="n in 10" :key="'skeleton-'+n" class="rounded-2xl bg-white/5 p-4 animate-pulse aspect-[9/16]"></div>
       </div>
 
       <!-- Error -->
@@ -27,17 +28,27 @@
 
       <!-- Anime List -->
       <div v-else>
-        <div v-if="ongoingAnime.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-if="ongoingAnime.length" class="grid grid-cols-2 gap-4">
           <article
             v-for="(anime, idx) in ongoingAnime"
             :key="anime.slug ?? idx"
-            class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+            class="bg-white/5 rounded-2xl shadow-lg hover:scale-105 hover:bg-white/10 transition transform overflow-hidden"
           >
             <router-link :to="`/anime/${anime.slug}`" class="block">
-              <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
-              <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
-              <p class="text-sm text-gray-300">📅 {{ anime.release_day }} | {{ anime.current_episode }}</p>
-              <p class="text-xs text-gray-400">Update: {{ anime.newest_release_date }}</p>
+              <!-- Gambar 9:16 -->
+              <div class="w-full aspect-[9/16] overflow-hidden">
+                <img
+                  :src="anime.poster"
+                  :alt="anime.title"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <!-- Info -->
+              <div class="p-3">
+                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+                <p class="text-sm text-gray-300">📅 {{ anime.release_day }} | {{ anime.current_episode }}</p>
+                <p class="text-xs text-gray-400">Update: {{ anime.newest_release_date }}</p>
+              </div>
             </router-link>
           </article>
         </div>
