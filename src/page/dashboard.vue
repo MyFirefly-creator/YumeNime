@@ -1,0 +1,172 @@
+<template>
+  <div class="min-h-screen bg-gradient-to-b from-[#1a1a2e] to-[#16213e] text-white">
+
+    <!-- Sticky Navbar -->
+    <header class="sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md shadow-md">
+      <div class="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+        <div>
+          <h1 class="text-3xl font-bold lato-font text-red-400">YumeNime</h1>
+          <p class="mt-1 text-sm opensans-font text-gray-300">Tempat menonton anime favorit — ringkas & elegan.</p>
+        </div>
+
+        <nav class="flex items-center gap-4">
+          <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
+          <router-link to="/anime-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Anime List</router-link>
+          <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero / Search -->
+    <section class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <input
+          type="text"
+          v-model="searchQuery"
+          @keyup.enter="searchAnime"
+          placeholder="Cari anime..."
+          class="flex-1 px-4 py-3 rounded-xl bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-400 transition"
+        />
+        <button
+          @click="searchAnime"
+          class="px-6 py-3 rounded-xl bg-red-500 hover:bg-red-400 transition text-white font-semibold"
+        >
+          Cari
+        </button>
+      </div>
+    </section>
+
+    <!-- Content -->
+    <main class="max-w-7xl mx-auto px-6 pb-10">
+      <!-- Loading Skeleton -->
+      <div v-if="loading" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div v-for="n in 5" :key="'skeleton-' + n" class="rounded-2xl bg-white/5 p-4 animate-pulse h-64"></div>
+      </div>
+
+      <!-- Error -->
+      <div v-else-if="error" class="mb-6 p-4 rounded-lg bg-red-100 text-red-700 firasans-font text-center">
+        ⚠️ Gagal memuat data: {{ errorMessage }}
+      </div>
+
+      <!-- Search Results -->
+      <div v-else-if="isSearching">
+        <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">🔍 Hasil Pencarian</h2>
+        <div v-if="searchResults.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <article
+            v-for="(anime, idx) in searchResults"
+            :key="anime.slug ?? idx"
+            class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+          >
+            <router-link :to="`/anime/${anime.slug}`" class="block">
+              <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
+              <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+              <p v-if="anime.episode_count" class="text-sm text-gray-300 mt-1">Episode: {{ anime.episode_count }}</p>
+            </router-link>
+          </article>
+        </div>
+        <div v-else class="p-6 rounded-lg bg-white/5 text-center text-gray-300">
+          Tidak ada anime yang sesuai pencarian.
+        </div>
+      </div>
+
+      <!-- Default Home List -->
+      <div v-else>
+        <!-- Ongoing -->
+        <section class="mb-12">
+          <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">📺 Ongoing Anime</h2>
+          <div v-if="ongoing.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <article
+              v-for="(anime, idx) in ongoing"
+              :key="anime.slug ?? idx"
+              class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+            >
+              <router-link :to="`/anime/${anime.slug}`" class="block">
+                <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
+                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+              </router-link>
+            </article>
+          </div>
+          <div v-else class="p-6 rounded-lg bg-white/5 text-center text-gray-300">
+            Tidak ada ongoing anime saat ini.
+          </div>
+        </section>
+
+        <!-- Completed -->
+        <section>
+          <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">✅ Completed Anime</h2>
+          <div v-if="complete.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+            <article
+              v-for="(anime, idx) in complete"
+              :key="anime.slug ?? idx"
+              class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
+            >
+              <router-link :to="`/anime/${anime.slug}`" class="block">
+                <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
+                <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
+              </router-link>
+            </article>
+          </div>
+          <div v-else class="p-6 rounded-lg bg-white/5 text-center text-gray-300">
+            Tidak ada anime yang selesai saat ini.
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script setup>
+import api from '@/plugins/axios';
+import { ref, computed, onMounted } from 'vue';
+
+const animeList = ref(null);
+const loading = ref(true);
+const error = ref(false);
+const errorMessage = ref('');
+const searchQuery = ref('');
+
+// fetch home
+const getAnimeList = async () => {
+  loading.value = true;
+  error.value = false;
+  errorMessage.value = '';
+  try {
+    const res = await api.get('anime/home');
+    animeList.value = res?.data?.data ?? null;
+  } catch (err) {
+    console.error(err);
+    error.value = true;
+    errorMessage.value = err?.response?.data?.message || err.message || 'Unknown error';
+  } finally { loading.value = false; }
+};
+
+// search
+const searchAnime = async () => {
+  if (!searchQuery.value.trim()) {
+    getAnimeList();
+    return;
+  }
+  loading.value = true;
+  error.value = false;
+  errorMessage.value = '';
+  try {
+    const res = await api.get(`anime/search/${searchQuery.value}`);
+    animeList.value = {
+      ongoing_anime: res?.data?.search_results ?? [],
+      complete_anime: []
+    };
+  } catch (err) {
+    console.error(err);
+    error.value = true;
+    errorMessage.value = err?.response?.data?.message || err.message || 'Unknown error';
+  } finally { loading.value = false; }
+};
+
+onMounted(getAnimeList);
+
+// computed
+const ongoing = computed(() => animeList.value?.ongoing_anime ?? []);
+const complete = computed(() => animeList.value?.complete_anime ?? []);
+const isSearching = computed(() => searchQuery.value.trim() !== '');
+const searchResults = computed(() => ongoing.value);
+</script>
