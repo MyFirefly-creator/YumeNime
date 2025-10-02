@@ -11,7 +11,7 @@
 
         <nav class="flex items-center gap-4">
           <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
-          <router-link to="/anime-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Anime List</router-link>
+          <router-link to="/genre-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Genre List</router-link>
           <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
         </nav>
       </div>
@@ -57,7 +57,7 @@
             :key="anime.slug ?? idx"
             class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
           >
-            <router-link :to="`/anime/${anime.slug}`" class="block">
+            <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
               <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
               <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
               <p v-if="anime.episode_count" class="text-sm text-gray-300 mt-1">Episode: {{ anime.episode_count }}</p>
@@ -73,14 +73,23 @@
       <div v-else>
         <!-- Ongoing -->
         <section class="mb-12">
-          <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">📺 Ongoing Anime</h2>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-red-400 lato-font">📺 Ongoing Anime</h2>
+            <router-link 
+              to="/ongoing-list"
+              class="text-sm bg-red-500 hover:bg-red-400 px-3 py-1 rounded-lg transition"
+            >
+              Lihat Semua →
+            </router-link>
+          </div>
+
           <div v-if="ongoing.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <article
               v-for="(anime, idx) in ongoing"
               :key="anime.slug ?? idx"
               class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
             >
-              <router-link :to="`/anime/${anime.slug}`" class="block">
+              <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
                 <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
                 <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
               </router-link>
@@ -93,14 +102,23 @@
 
         <!-- Completed -->
         <section>
-          <h2 class="text-2xl font-bold text-red-400 lato-font mb-6">✅ Completed Anime</h2>
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-red-400 lato-font">✅ Completed Anime</h2>
+            <router-link 
+              :to="{ name: 'CompletedList', params: { page: 1 } }"
+              class="text-sm bg-red-500 hover:bg-red-400 px-3 py-1 rounded-lg transition"
+            >
+              Lihat Semua →
+            </router-link>
+          </div>
+
           <div v-if="complete.length" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             <article
               v-for="(anime, idx) in complete"
               :key="anime.slug ?? idx"
               class="bg-white/5 rounded-2xl p-3 shadow-lg hover:scale-105 hover:bg-white/10 transition transform"
             >
-              <router-link :to="`/anime/${anime.slug}`" class="block">
+              <router-link :to="`/anime/${extractSlug(anime.slug)}`" class="block">
                 <img :src="anime.poster" :alt="anime.title" class="w-full h-56 object-cover rounded-xl mb-3"/>
                 <h3 class="text-lg font-semibold truncate" :title="anime.title">{{ anime.title }}</h3>
               </router-link>
@@ -124,6 +142,13 @@ const loading = ref(true);
 const error = ref(false);
 const errorMessage = ref('');
 const searchQuery = ref('');
+
+// helper slug extractor
+const extractSlug = (url) => {
+  if (!url) return '';
+  const parts = url.split('/').filter(Boolean);
+  return parts[parts.length - 1];
+};
 
 // fetch home
 const getAnimeList = async () => {

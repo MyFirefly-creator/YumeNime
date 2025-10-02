@@ -3,6 +3,11 @@ import Index from "@/page/index.vue";
 import Dashboard from "@/page/dashboard.vue";
 import Anime from "@/page/detail/anime.vue";
 import Episode from "@/page/detail/episode/episode.vue";
+import Genre from "@/page/genre/genre.vue";
+import GenreDetail from "@/page/genre/genreDetail.vue";
+import Ongoing from "@/page/ongoing/ongoing.vue";
+import Completed from "@/page/completed/completed.vue";
+import AnimeAll from "@/page/animeAll.vue";
 
 const routes = [
   {
@@ -25,6 +30,31 @@ const routes = [
     name: "AnimeEpisode",
     component: Episode,
     props: true
+  },
+  {
+    path: "/genre-list",
+    name: "GenreList",
+    component: Genre  
+  },
+  {
+    path: "/genre/:slug",
+    name: "GenreDetail",
+    component: GenreDetail,
+  },
+  {
+    path: "/ongoing-list",
+    name: "OngoingList",
+    component: Ongoing
+  },
+  {
+    path: "/completed-list/:page?",
+    name: "CompletedList",
+    component: Completed
+  },
+  {
+    path: "/anime-all", 
+    name: "AnimeAll",
+    component: AnimeAll
   }
 ];
 

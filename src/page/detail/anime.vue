@@ -11,7 +11,7 @@
 
         <nav class="flex items-center gap-4">
           <router-link to="/" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Home</router-link>
-          <router-link to="/anime-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Anime List</router-link>
+          <router-link to="/genre-list" class="opensans-font px-4 py-2 rounded-md hover:bg-white/10 transition">Genre List</router-link>
           <router-link to="/dashboard" class="opensans-font px-4 py-2 rounded-md bg-red-500 hover:bg-red-400 transition">Dashboard</router-link>
         </nav>
       </div>
