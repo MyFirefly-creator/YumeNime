@@ -84,10 +84,8 @@ const changePage = (page) => {
 
 watch(() => route.query.page, () => {
   getGenreDetail();
-});
+}, { immediate: true });
 
-
-onMounted(() => getGenreDetail());
 </script>
 
 <style scoped>
