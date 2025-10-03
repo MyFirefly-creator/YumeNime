@@ -1,13 +1,21 @@
 <template>
     <header class="sticky top-0 z-50 bg-[#1a1a2e]/90 shadow-md">
     <div class="max-w-7xl mx-auto flex items-center justify-between py-6 px-6">
-      <!-- Logo -->
-      <div>
-        <h1 class="text-3xl font-bold lato-font text-red-400">YumeNime</h1>
-        <p class="mt-1 text-sm opensans-font text-gray-300">
-          Tempat menonton anime favorit — ringkas & elegan.
-        </p>
+      <div class="flex items-center gap-4">
+        <!-- Logo -->
+        <img src="./img/Logo.png" alt="YumeNime Logo" class="w-16 h-16 rounded-full"/>
+
+        <!-- Teks dengan typing loop -->
+        <div class="flex flex-col">
+          <h1 class="lato-font text-red-400 text-2xl font-bold">
+            YumeNime
+          </h1>
+          <p class="opensans-font text-gray-300 text-xs typing-loop overflow-hidden whitespace-nowrap border-r-2 border-gray-300">
+            Tempat menonton anime favorit — ringkas & elegan.
+          </p>
+        </div>
       </div>
+
 
       <!-- Desktop Menu -->
       <nav class="hidden md:flex items-center gap-4">
@@ -17,7 +25,7 @@
       </nav>
 
       <!-- Mobile Button -->
-      <button @click="isOpen = !isOpen" class="md:hidden text-gray-200 focus:outline-none">
+      <button @click="isOpen = !isOpen" class="border border-red-500 text-gray-200 focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path v-if="!isOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -67,5 +75,18 @@ export default {
 }
 .slide-leave-to {
   transform: translateX(100%);
+}
+
+/* Typing + deleting loop */
+@keyframes typingLoop {
+  0% { width: 0 }
+  40% { width: 100% }
+  60% { width: 100% }
+  100% { width: 0 }
+}
+
+.typing-loop {
+  width: 0;
+  animation: typingLoop 6s steps(50, end) infinite;
 }
 </style>
